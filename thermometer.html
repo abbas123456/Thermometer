@@ -1,0 +1,101 @@
+<html>
+<h1>Interactive thermometer</h1>
+<input type="button" value="Pause" onClick="if(paused){timer2.resume();}else{timer2.pause();}" /> <br>
+<input type="button" value="Slower" onClick="speed+=10;" />
+<input type="button" value="Faster" onClick="speed-=10;" />
+<img src="thermometer1.gif"/> 
+
+<style>
+H1,H2 
+   {
+   	font-family:'Comic Sans MS';
+	font-weight: bold;
+	text-decoration: underline
+   }
+</style>
+<style type="text/css">
+div#container{
+position:absolute;top:10%;left:50%;
+width:20px;height:800px;
+background:#c00;
+
+
+border:ridge 1px #000;
+overflow:hidden;
+}
+img{
+position:absolute;top:10%;left:35%;
+z-index:1;
+
+}
+div#container div{
+background:#eee;
+line-height:0;
+height:100%;
+
+}
+</style>
+
+<script type="text/javascript">
+paused = false;
+speed=50;
+function Timer(callback, delay) {
+    var timerId, start, remaining = delay;
+
+    this.pause = function() {
+        window.clearTimeout(timerId);
+        remaining -= new Date() - start;
+        paused=true;
+    };
+
+    this.resume = function() {
+        start = new Date();
+        timerId = window.setTimeout(callback, remaining);
+        paused=false;
+    };
+
+    this.resume();
+}
+
+onload=function(evt){
+this["thermometer"]=function(){
+var $th=null;
+
+function getm(dir){
+var
+ptr_c=document.getElementById("container"),
+ptr_t=ptr_c.getElementsByTagName("div")[0];
+dir*=-1;
+return function(m){
+m=ptr_t.offsetHeight+dir*m;
+if(0<m&&m<ptr_c.offsetHeight)
+ptr_t.style.height=m+"px";
+}
+}
+
+if(document.getElementById&&
+document.getElementsByTagName){
+$th={
+up:getm(+1),
+down:getm(-1)
+};
+}
+
+return $th;
+}();
+
+if(this["thermometer"]){
+
+timer = new Timer(function(){
+this["thermometer"]
+[Math.random()<0.6?"up":"down"](Math.random()*5|0);
+timer2 = new Timer(arguments.callee,speed);
+}, 1000);
+}
+}
+</script>
+
+
+
+<div id="container"><div>&nbsp;</div></div>
+<html>
